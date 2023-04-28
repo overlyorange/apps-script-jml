@@ -26,4 +26,4 @@ Once installed and configured, call resetUserStateFile() inside [JSONController]
 
 ## Usage
 
-The project addds a new UI element to the sheet. When called, a sidebar appears displaying a dropdown of all users in the workspace (admin privileges may be necessary). Once a user has been selected, their current state inside each JML procedure is read in and displayed in the sidebar. Steps can be checked an unchecked, descriptions can be toggled, and apps script function can be called by clicking the corresponding button.
+The project addds a new UI element to the sheet. When called, a sidebar appears displaying a dropdown of all users in the workspace (admin privileges may be necessary). Once a user has been selected, their current state inside each JML procedure is read in and displayed in the sidebar. Steps can be checked an unchecked, descriptions can be toggled, and apps script function can be called by clicking corresponding buttons.
