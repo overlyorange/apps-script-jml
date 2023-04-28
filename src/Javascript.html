@@ -1,0 +1,252 @@
+<script>
+   /**************************
+    * Initialization
+    **************************/
+   console.log('script start');
+
+   let currentFeatureContainer;
+   let currentUserState;
+   let currentUserID;
+
+   google.script.run.withSuccessHandler(addOptions).listAllUsers();
+
+   /**************************
+    * Initialize DropDown
+    **************************/
+   function addOptions(users) {
+      console.log('preparing user menu');
+      let select = document.getElementById('selection');
+
+      for (let user of users) {
+         let option = document.createElement('option');
+         option.text = user.name.fullName;
+         option.value = user.id;
+         select.add(option);
+      }
+      select.options[0].text = 'Select';
+   }
+
+   /**************************
+    * Select Users
+    **************************/
+
+   function selectUser(event) {
+      console.log('setting user');
+      let postSelectionContainer = document.getElementById('postSelection');
+      postSelectionContainer.style.display = 'none';
+
+      let loader = document.querySelector('.loader');
+      loader.style.display = 'flex';
+
+      let select = document.getElementById('selection');
+      currentUserID = select.value;
+      google.script.run
+         .withSuccessHandler(processUserState)
+         .getUserState(select.value);
+   }
+
+   /**************************
+    * Navigation
+    **************************/
+
+   function toggleFeatureContainer(feature) {
+      console.log('setting feature container');
+      let containers = document.querySelectorAll('.procedureContainer');
+      let navButtons = document.querySelectorAll('nav button');
+      for (let container of containers) {
+         if (container.id !== `${feature}Container`) {
+            container.style.display = 'none';
+            currentFeatureContainer = feature;
+         } else {
+            container.style.display = 'block';
+         }
+      }
+      for (let navButton of navButtons) {
+         if (navButton.id !== `${feature}Button`) {
+            navButton.classList.remove('selected');
+         } else {
+            navButton.classList.add('selected');
+         }
+      }
+   }
+
+   /**************************
+    * Prepare User State
+    **************************/
+
+   function processUserState(state) {
+      currentUserState = state;
+      console.log('current user state', currentUserState);
+
+      let toolTips = document.querySelector('.tooltips');
+
+      for (let procedure in state) {
+         let procedureContainer = document.getElementById(
+            `${procedure.slice(0, -4)}Container`
+         ); //joinersList --> joinersContainer
+
+         let form = document.createElement('form');
+         form.id = procedure;
+         let itemBuffer = [];
+
+         //Form
+         for (let item of state[procedure]) {
+            let container = document.createElement('div');
+
+            //Input
+            let checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.name = item.name;
+            checkbox.value = item.checked;
+            checkbox.checked = item.checked;
+
+            //Label
+            let label = document.createElement('label');
+            label.id = item.name;
+            label.appendChild(document.createTextNode(item.name));
+
+            //Label Info
+            if (item.hasOwnProperty('description')) {
+               labelInfoIcon = document.createElement('span');
+               labelInfoIcon.classList.add('material-symbols-outlined');
+               labelInfoIcon.appendChild(
+                  document.createTextNode('help_outline')
+               );
+               labelInfoIcon.addEventListener('click', toggleDescription);
+               label.appendChild(labelInfoIcon);
+            }
+
+            container.appendChild(checkbox);
+            container.appendChild(label);
+
+            //If List
+            if (item.hasOwnProperty('list')) {
+               let ul = document.createElement('ul');
+
+               for (let listItem of item.list) {
+                  let li = document.createElement('li');
+                  li.appendChild(document.createTextNode(listItem));
+                  ul.appendChild(li);
+               }
+               container.appendChild(ul);
+            }
+
+            //Add URLS
+
+            if (item.hasOwnProperty('links')) {
+               let linkContainer = document.createElement('div');
+
+               for (let link of item.links) {
+                  let a = document.createElement('a');
+
+                  aText = document.createTextNode(link.text);
+                  aTextIcon = document.createElement('span');
+                  aTextIcon.classList.add('material-symbols-outlined');
+                  aTextIcon.appendChild(document.createTextNode('open_in_new'));
+
+                  a.appendChild(aText);
+                  a.appendChild(aTextIcon);
+                  a.href = link.url;
+                  a.target = '_blank';
+
+                  linkContainer.appendChild(a);
+               }
+               container.appendChild(linkContainer);
+            }
+
+            //Add button
+            if (item.hasOwnProperty('action')) {
+               let buttonContainer = document.createElement('div');
+               let button = document.createElement('button');
+               button.innerHTML = item.action.text;
+
+               //Check if button needs to be enabled
+               if (item.checked == false) {
+                  button.onclick = function () {
+                     google.script.run[item.action.callback](currentUserID);
+                     event.target.disabled = true;
+                     event.target.parentElement.parentElement.querySelector(
+                        'input'
+                     ).checked = true;
+                     event.stopPropagation();
+
+                     currentUserState[procedure][
+                        currentUserState[procedure].indexOf(item)
+                     ].checked = true;
+                     google.script.run.saveUserState(
+                        currentUserID,
+                        currentUserState
+                     );
+                  };
+               } else {
+                  button.disabled = true;
+               }
+
+               buttonContainer.appendChild(button);
+               container.appendChild(buttonContainer);
+            }
+
+            //Add description
+            if (item.hasOwnProperty('description')) {
+               let description = document.createElement('div');
+               description.appendChild(
+                  document.createTextNode(item.description)
+               );
+               description.classList.add('description');
+               description.id = item.name + '_description';
+               description.classList.add('inactive');
+               container.append(description);
+            }
+
+            //Save item container to buffer
+            itemBuffer.push(container);
+         }
+
+         //Add buffer to procedure container
+         form.replaceChildren(...itemBuffer);
+         form.addEventListener('change', onFormChange);
+         procedureContainer.replaceChildren(form);
+      }
+      let postSelectionContainer = document.getElementById('postSelection');
+      postSelectionContainer.style.display = 'flex';
+
+      let loader = document.querySelector('.loader');
+      loader.style.display = 'none';
+
+      toggleFeatureContainer(currentFeatureContainer || 'joiners');
+
+      //Scroll to first unselected element
+      setTimeout(function () {
+         let unselectedElements = document.querySelectorAll(
+            'input[type="checkbox"]:not(:checked)'
+         );
+         unselectedElements[0].scrollIntoView({ behavior: 'smooth' });
+      }, 250);
+   }
+
+   /**************************
+    * Item Descriptions
+    **************************/
+
+   function toggleDescription(event) {
+      let labelId = event.target.parentElement.id;
+      let descriptionElement = document.getElementById(
+         `${labelId}_description`
+      );
+      descriptionElement.classList.toggle('inactive');
+   }
+
+   /**************************
+    * Saving state
+    **************************/
+   function onFormChange(event) {
+      console.log('attempting save');
+      let procedure = event.target.parentElement.parentElement.id;
+      for (let item of currentUserState[procedure]) {
+         if (item.name == event.target.name) {
+            item.checked = event.target.checked;
+         }
+      }
+      google.script.run.saveUserState(currentUserID, currentUserState);
+   }
+</script>

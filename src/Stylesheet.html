@@ -1,0 +1,254 @@
+<style>
+   @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0');
+   @import url('https://fonts.googleapis.com/css2?family=Dosis&display=swap');
+
+   :root {
+      font-family: Dosis;
+      box-sizing: border-box !important;
+      line-height: 1.2em;
+   }
+
+   html {
+      max-height: 100vh;
+      height: 100vh;
+   }
+
+   body {
+      background-color: #f1f2f2;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      max-height: 100vh;
+      height: 100%;
+      margin: 0;
+   }
+
+   header {
+      margin: 0.5em;
+   }
+
+   header select {
+      border: none;
+      width: 100%;
+      padding: 0.3em;
+   }
+
+   #authorization {
+      display: none;
+   }
+
+   #postSelection {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      overflow: hidden;
+   }
+
+   nav {
+      margin: 1em 0.5em;
+      background-color: white;
+      display: flex;
+   }
+
+   nav button {
+      flex: 1;
+      border: 0;
+      background-color: white;
+      padding: 0.3em;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+   }
+
+   nav button:hover {
+      background-color: #f8f9f9;
+   }
+
+   nav button.selected {
+      background-color: #104f9e;
+   }
+
+   nav button.selected .material-symbols-outlined {
+      color: white;
+   }
+
+   main {
+      flex: 1;
+      overflow-y: auto;
+   }
+
+   main div {
+      display: none;
+   }
+
+   main form {
+      overflow-y: auto;
+   }
+
+   /* Item container */
+   main div div {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: start;
+      padding: 1em 0.5em;
+      border-bottom: 1px dotted #c1c2c2;
+   }
+
+   main div div:first-child {
+      margin-top: 0;
+   }
+
+   main div div:nth-child(odd) {
+   }
+
+   main div div input[type='checkbox'] {
+      padding: 0.1em;
+      flex-basis: 10%;
+      font-size: 1em;
+      flex: 0;
+   }
+
+   main div div label {
+      margin-left: 0.5em;
+      flex: 1;
+      flex-basis: 80%;
+   }
+
+   main div div label .material-symbols-outlined {
+      font-size: 1em;
+      margin-left: 0.5em;
+   }
+
+   /* Labels for checked inputs */
+   input[type='checkbox']:checked + label {
+      color: #919191;
+   }
+
+   /* Container below checkbox for additional material (lists, links, buttons, etc.)*/
+   main div div div {
+      flex-basis: 100%;
+      display: flex;
+      justify-content: center;
+      margin: 1em 0.5em 0em;
+      padding: 0.5em 0.5em;
+      border: none;
+   }
+
+   main ul {
+      width: 100%;
+      margin: 0.5em 1em;
+   }
+
+   main ul li {
+      margin-left: 0.5em;
+   }
+
+   main div div div a {
+      display: block;
+      width: 100%;
+      text-align: right;
+      color: #104f9e;
+      text-decoration: none;
+   }
+
+   main div div div a .material-symbols-outlined {
+      font-size: 1em;
+      margin-left: 0.5em;
+   }
+
+   main div div div button {
+      border: none;
+      background-color: white;
+      padding: 0.5em;
+   }
+
+   main div div div button:not([disabled]):hover {
+      background-color: #f8f9f9;
+   }
+
+   .description {
+      display: block;
+      background-color: white;
+      padding: 0.5em;
+      margin: 1em 0em;
+   }
+
+   .description.inactive {
+      display: none;
+   }
+
+   /*
+  .tooltips {
+    width: 100%;
+    flex: 0;
+    bottom: 0;
+    left: 0;
+  }
+
+  .tooltips div {
+    display: none;
+    padding: 1em;
+    background-color: white;
+  }
+
+  .tooltips div.active {
+    display: block;
+  }
+*/
+   /* LOADER */
+   .loader {
+      display: none;
+      width: 100%;
+      height: 200px;
+      box-sizing: border-box;
+      justify-content: center;
+      align-items: center;
+   }
+
+   .lds-ring {
+      display: inline-block;
+      position: relative;
+      width: 80px;
+      height: 80px;
+      top: 0;
+      left: 0;
+   }
+
+   .lds-ring div {
+      box-sizing: border-box;
+      display: block;
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      margin: 8px;
+      border: 4px solid transparent;
+      border-radius: 50%;
+      animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+      border-color: #104f9e transparent transparent transparent;
+   }
+
+   .lds-ring div:nth-child(1) {
+      animation-delay: -0.45s;
+      border-color: #fad91f transparent transparent transparent;
+   }
+
+   .lds-ring div:nth-child(2) {
+      animation-delay: -0.3s;
+      border-color: #ea80a8 transparent transparent transparent;
+   }
+
+   .lds-ring div:nth-child(3) {
+      animation-delay: -0.15s;
+      border-color: #34a853 transparent transparent transparent;
+   }
+
+   @keyframes lds-ring {
+      0% {
+         transform: rotate(0deg);
+      }
+
+      100% {
+         transform: rotate(360deg);
+      }
+   }
+</style>

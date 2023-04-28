@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Dosis&display=swap');
+
+  :root {
+    font-family: Dosis;
+  }
+
+  #errorCnt {
+    display: none;
+    color: red;
+    margin-bottom: 1em;
+  }
+
+  .type {
+    display: none;
+  }
+
+  .type div {
+    display: flex;
+    flex-wrap: wrap;
+    padding: .2em .5em;
+  }
+
+  .type input[type="radio"] {
+    flex: 0;
+  }
+
+  .type input[type="radio"]+label {
+    margin-left: .5em;
+    flex: 1;
+    flex-basis: 80%;
+  }
+
+  .type .btnContainer {
+    margin-top: 1em;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .type button {
+    border: 0;
+    background-color: #f1f2f2;
+    padding: .8em;
+  }
+
+  .type button:hover {
+    background-color: #f8f9f9;
+    cursor: pointer;
+  }
+</style>
+
+<head>
+  <base target="_top">
+</head>
+
+<body>
+  <div>
+    <div id="errorCnt"></div>
+
+    <!-- LEGAL DOCUMENTATION -->
+    <div class="type" id="legalDocumentation">
+      <div>
+        <input type="radio" id="employment" value="employment">
+        <label for="employment">Employment Contract</label>
+      </div>
+      <div>
+        <input type="radio" id="consultancy" value="consultancy">
+        <label for="consultancy">Consultancy Agreement</label>
+      </div>
+      <div>
+        <input type="radio" id="volunteering" value="volunteering">
+        <label for="volunteering">Volunteering Agreement</label>
+      </div>
+      <div class="btnContainer">
+        <button onclick="processLegalDocument(event)">Create</button>
+      </div>
+    </div>
+
+    <div class="type" id="displayURL">
+
+    </div>
+
+    <!-- Add more widget content here... -->
+  </div>
+
+
+  <script>
+    console.log('called');
+    const payload = JSON.parse(<?= payload ?>);
+    console.log(payload);
+    document.getElementById(payload.type).style.display = 'block';
+
+    init();
+
+
+    function init(){
+
+      if(payload.type == 'displayURL'){
+        let container = document.getElementById('displayURL');
+        let a = document.createElement('a');
+        a.href = payload.href;
+        a.target = '_blank';
+        a.appendChild(document.createTextNode(payload.text));
+        container.appendChild(a);
+      }
+
+    }
+
+/** 
+ * LEGAL DOCUMENTATION 
+*/
+
+  function processLegalDocument(event){
+    let selected = document.querySelector('#legalDocumentation').querySelector('input[type="radio"]:checked');
+    if(selected != null){
+      console.log(selected.value);
+      google.script.run.createLegalDocument(payload.uuid, selected.value);
+      google.script.host.close();
+    } else {
+      displayError('Please select a document type.');
+    }
+  }
+
+/** 
+ * Add more widget functionality here...
+*/
+
+
+
+
+
+
+/** 
+ * ERROR
+*/
+
+  function displayError(text){
+    let errorMsg = document.createTextNode(text);
+    let errorCnt = document.getElementById("errorCnt");
+    errorCnt.appendChild(errorMsg);
+    errorCnt.style.display = 'block';
+  }
+
+  </script>
+
+</body>
+
+</html>

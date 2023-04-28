@@ -1,0 +1,11 @@
+{
+   "name": "apps-script-jml",
+   "version": "1.0.0",
+   "description": "A Google Apps Script extension to handle JML procedures from a sheet sidebar",
+   "main": "Code.gs",
+   "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1"
+   },
+   "author": "Seb Dempf",
+   "license": "ISC"
+}

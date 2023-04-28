@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <base target="_top" />
+      <?!= include('Stylesheet'); ?>
+   </head>
+
+   <body>
+      <header>
+         <h1>User</h1>
+         <select id="selection" onchange="selectUser()">
+            <option disabled selected id="loadingOption">Loading...</option>
+         </select>
+      </header>
+      <nav>
+         <button onclick="toggleFeatureContainer('joiners')" id="joinersButton">
+            <span class="material-symbols-outlined">child_care</span>
+         </button>
+         <button onclick="toggleFeatureContainer('movers')" id="moversButton">
+            <span class="material-symbols-outlined">swap_horiz</span>
+         </button>
+         <button onclick="toggleFeatureContainer('leavers')" id="leaversButton">
+            <span class="material-symbols-outlined">exit_to_app</span>
+         </button>
+      </nav>
+      <div class="loader">
+         <div class="lds-ring">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+         </div>
+      </div>
+      <div id="postSelection">
+         <main>
+            <div id="joinersContainer" class="procedureContainer">Joiners</div>
+            <div id="moversContainer" class="procedureContainer">Movers</div>
+            <div id="leaversContainer" class="procedureContainer">Leavers</div>
+         </main>
+         <div class="tooltips"></div>
+      </div>
+      <?!= include('JavaScript'); ?>
+   </body>
+</html>
